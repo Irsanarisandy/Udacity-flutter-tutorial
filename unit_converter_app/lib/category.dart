@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+// @required is defined in the meta.dart package
+import 'package:meta/meta.dart';
+import 'package:unit_converter_app/converter_screen.dart';
+import 'package:unit_converter_app/unit.dart';
+
 
 // NOTE: Variables or functions with underscores at front are private
 final _widgetHeight = 100.0;
@@ -12,18 +17,43 @@ class Category extends StatelessWidget {
     Key key,
     @required this.name,
     @required this.color,
-    @required this.iconLocation
+    @required this.iconLocation,
+    @required this.units,
   }) : assert(name != null),
        assert(color != null),
        assert(iconLocation != null),
+       assert(units != null),
        super(key: key);
 
   final String name;
   final ColorSwatch color;
   final IconData iconLocation;
+  final List<Unit> units;
 
-  void _isTapped() {
-    print('I was tapped!');
+  void _navigateToConverter(BuildContext context) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              name,
+              style: Theme.of(context).textTheme.display1,
+            ),
+            centerTitle: true,
+            elevation: 1.0,
+            backgroundColor: color,
+          ),
+          body: ConverterScreen(
+            name: name,
+            color: color,
+            units: units
+          ),
+        );
+      })
+    );
   }
 
   @override
@@ -40,7 +70,7 @@ class Category extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: InkWell(
             borderRadius: _widgetBorderRadius,
-            onTap: _isTapped,
+            onTap: () => _navigateToConverter(context),
             splashColor: color,
             highlightColor: color,
             child: Row(
@@ -57,7 +87,7 @@ class Category extends StatelessWidget {
                   child: Text(
                     name,
                     // Use built-in theme from ".of(context)"
-                    // https://docs.flutter.io/flutter/material/TextTheme-class.html
+                    // See https://docs.flutter.io/flutter/material/TextTheme-class.html
                     style: Theme.of(context).textTheme.headline,
                   ),
                 )
