@@ -32,36 +32,39 @@ class Category extends StatelessWidget {
   // Theme ancestor in the tree. Below, we obtain the display1 text theme.
   // See https://docs.flutter.io/flutter/material/Theme-class.html
   Widget build(BuildContext context) {
-    return Container(
-      height: _widgetHeight,
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: InkWell(
-          borderRadius: _widgetBorderRadius,
-          onTap: _isTapped,
-          splashColor: color,
-          highlightColor: color,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Icon(
-                  iconLocation,
-                  size: 60.0,
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        height: _widgetHeight,
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: InkWell(
+            borderRadius: _widgetBorderRadius,
+            onTap: _isTapped,
+            splashColor: color,
+            highlightColor: color,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Icon(
+                    iconLocation,
+                    size: 60.0,
+                  ),
                 ),
-              ),
-              Center(
-                child: Text(
-                  name,
-                  // Use built-in theme from ".of(context)"
-                  // https://docs.flutter.io/flutter/material/TextTheme-class.html
-                  style: Theme.of(context).textTheme.headline,
-                ),
-              )
-            ],
+                Center(
+                  child: Text(
+                    name,
+                    // Use built-in theme from ".of(context)"
+                    // https://docs.flutter.io/flutter/material/TextTheme-class.html
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
+        )
       )
     );
   }
