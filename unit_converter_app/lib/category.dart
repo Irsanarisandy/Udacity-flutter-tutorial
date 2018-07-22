@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 import 'package:unit_converter_app/converter_screen.dart';
 import 'package:unit_converter_app/unit.dart';
 
-
 // NOTE: Variables or functions with underscores at front are private
 final _widgetHeight = 100.0;
 final _widgetBorderRadius = BorderRadius.circular(_widgetHeight/2);

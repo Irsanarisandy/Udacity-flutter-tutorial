@@ -4,8 +4,8 @@ import 'package:unit_converter_app/unit.dart';
 
 final _backgroundColor = Colors.green[100];
 
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen();
+class _CategoryScreenState extends State<CategoryScreen> {
+  final _categories = <Category>[];
 
   static const _categoryNames = <String>[
     'Length',
@@ -29,14 +29,7 @@ class CategoryScreen extends StatelessWidget {
     Colors.red,
   ];
 
-  Widget _buildCategoryWidgets(List<Category> categories) {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) => categories[index],
-      itemCount: categories.length,
-    );
-  }
-
-  /// Returns a list of mock [Unit]s.
+  // Returns a list of mock [Unit]s.
   List<Unit> _retrieveUnitList(String categoryName) {
     return List.generate(10, (int i) {
       i += 1;
@@ -48,10 +41,11 @@ class CategoryScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final categories = <Category>[];
+  void initState() {
+    super.initState();
+
     for (var i = 0; i < _categoryNames.length; i++) {
-      categories.add(
+      _categories.add(
           Category(
             name: _categoryNames[i],
             color: _baseColors[i],
@@ -60,7 +54,17 @@ class CategoryScreen extends StatelessWidget {
           )
       );
     }
+  }
 
+  Widget _buildCategoryWidgets() {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) => _categories[index],
+      itemCount: _categories.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final appBar = AppBar(
       title: Text(
         'Unit Converter',
@@ -75,7 +79,7 @@ class CategoryScreen extends StatelessWidget {
     );
 
     final categoryView = Container(
-      child: _buildCategoryWidgets(categories),
+      child: _buildCategoryWidgets(),
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       color: _backgroundColor,
     );
@@ -85,4 +89,11 @@ class CategoryScreen extends StatelessWidget {
       body: categoryView,
     );
   }
+}
+
+class CategoryScreen extends StatefulWidget {
+  const CategoryScreen();
+
+  @override
+  _CategoryScreenState createState() => _CategoryScreenState();
 }
