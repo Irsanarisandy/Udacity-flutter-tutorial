@@ -138,9 +138,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
     if (deviceOrientation == Orientation.portrait) {
       return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
+          var _category = _categories[index];
           return CategoryTile(
-            category: _categories[index],
-            onTap: _onCategoryTap
+            category: _category,
+            onTap: _category.name == "Currency" && _category.units.isEmpty
+              ? null : _onCategoryTap,
           );
         },
         itemCount: _categories.length,
@@ -152,7 +154,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       children: _categories.map((Category category) {
         return CategoryTile(
           category: category,
-          onTap: _onCategoryTap,
+          onTap: category.name == "Currency" && category.units.isEmpty
+            ? null : _onCategoryTap,
         );
       }).toList(),
     );

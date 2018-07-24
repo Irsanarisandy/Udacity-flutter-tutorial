@@ -13,7 +13,6 @@ class CategoryTile extends StatelessWidget {
     @required this.category,
     @required this.onTap,
   })  : assert(category != null),
-        assert(onTap != null),
         super(key: key);
 
   final Category category;
@@ -33,7 +32,7 @@ class CategoryTile extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: InkWell(
             borderRadius: _widgetBorderRadius,
-            onTap: () => onTap(category),
+            onTap: onTap == null ? null : () => onTap(category),
             highlightColor: category.color['highlight'],
             splashColor: category.color['splash'],
             child: Row(
