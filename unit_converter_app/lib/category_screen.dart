@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'category.dart';
 import 'category_tile.dart';
@@ -6,21 +8,9 @@ import 'unit.dart';
 import 'backdrop.dart';
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  // When extending state, the variables are either set in initState or setState
   final _categories = <Category>[];
   Category _defaultCategory;
   Category _currentCategory;
-
-  static const _categoryNames = <String>[
-    'Length',
-    'Area',
-    'Volume',
-    'Mass',
-    'Time',
-    'Digital Storage',
-    'Energy',
-    'Currency',
-  ];
 
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
@@ -58,35 +48,44 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }),
   ];
 
-  // Returns a list of mock [Unit]s.
-  List<Unit> _retrieveUnitList(String categoryName) {
-    return List.generate(10, (int i) {
-      i += 1;
-      return Unit(
-        name: '$categoryName Unit $i',
-        conversion: i.toDouble(),
-      );
-    });
+  // We use didChangeDependencies() so that we can wait for our JSON asset to be
+  // loaded in (async).
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (_categories.isEmpty) {
+      await _retrieveLocalCategories();
+    }
   }
 
-  @override
-  void initState() {
-    super.initState();
-
+  // Retrieves a list of [Categories] and their [Unit]s
+  Future<void> _retrieveLocalCategories() async {
+    final json = DefaultAssetBundle.of(context).loadString('assets/data/regular_units.json');
+    final data = JsonDecoder().convert(await json);
+    if (data is! Map) {
+      throw ('Data retrieved from API is not a Map');
+    }
+    var categoryIndex = 0;
     Category category;
-    for (var i = 0; i < _categoryNames.length; i++) {
+    for (var key in data.keys) {
+      final List<Unit> units = data[key].map<Unit>(
+        (dynamic data) => Unit.fromJson(data)
+      ).toList();
+
       category = Category(
-        name: _categoryNames[i],
-        color: _baseColors[i],
+        name: key,
+        color: _baseColors[categoryIndex],
         iconLocation: Icons.cake,
-        units: _retrieveUnitList(_categoryNames[i]),
+        units: units,
       );
 
-      if (i == 0) {
-        _defaultCategory = category;
-      }
-
-      _categories.add(category);
+      setState(() {
+        if (categoryIndex == 0) {
+          _defaultCategory = category;
+        }
+        _categories.add(category);
+      });
+      categoryIndex++;
     }
   }
 
