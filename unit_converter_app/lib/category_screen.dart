@@ -48,6 +48,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }),
   ];
 
+  static const _imageLocations = <String>[
+    "assets/icons/length.png",
+    "assets/icons/area.png",
+    "assets/icons/volume.png",
+    "assets/icons/mass.png",
+    "assets/icons/time.png",
+    "assets/icons/digital_storage.png",
+    "assets/icons/power.png",
+    "assets/icons/currency.png",
+  ];
+
   // We use didChangeDependencies() so that we can wait for our JSON asset to be
   // loaded in (async).
   @override
@@ -75,7 +86,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       category = Category(
         name: key,
         color: _baseColors[categoryIndex],
-        iconLocation: Icons.cake,
+        iconLocation: _imageLocations[categoryIndex],
         units: units,
       );
 
