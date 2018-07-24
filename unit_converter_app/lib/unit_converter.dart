@@ -12,7 +12,7 @@ class _UnitConverterState extends State<UnitConverter> {
   String _outputValue = '';
   Unit _outputUnit;
   List<DropdownMenuItem> _unitMenuItems;
-  bool _showError = false;
+  bool _invalidInput = false;
   // Ensures that the input value persists
   final _inputKey = GlobalKey(debugLabel: 'inputText');
 
@@ -87,11 +87,11 @@ class _UnitConverterState extends State<UnitConverter> {
       } else {
         try {
           _inputValue = double.parse(input);
-          _showError = false;
+          _invalidInput = false;
           _resultOutput();
         } on Exception catch (err) {
           print("Error: $err");
-          _showError = true;
+          _invalidInput = true;
         }
       }
     });
@@ -172,7 +172,7 @@ class _UnitConverterState extends State<UnitConverter> {
             decoration: InputDecoration(
                 labelText: 'Input',
                 labelStyle: Theme.of(context).textTheme.display1,
-                errorText: _showError ? 'Invalid number!' : null,
+                errorText: _invalidInput ? 'Invalid number!' : null,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(0.0)
                 )

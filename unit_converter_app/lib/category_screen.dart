@@ -6,6 +6,7 @@ import 'category_tile.dart';
 import 'unit_converter.dart';
 import 'unit.dart';
 import 'backdrop.dart';
+import 'api.dart';
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final _categories = <Category>[];
@@ -59,16 +60,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     "assets/icons/currency.png",
   ];
 
-  // We use didChangeDependencies() so that we can wait for our JSON asset to be
-  // loaded in (async).
-  @override
-  Future<void> didChangeDependencies() async {
-    super.didChangeDependencies();
-    if (_categories.isEmpty) {
-      await _retrieveLocalCategories();
-    }
-  }
-
   // Retrieves a list of [Categories] and their [Unit]s
   Future<void> _retrieveLocalCategories() async {
     final json = DefaultAssetBundle.of(context).loadString('assets/data/regular_units.json');
@@ -97,6 +88,43 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _categories.add(category);
       });
       categoryIndex++;
+    }
+  }
+
+  Future<void> _retrieveApiCategories() async {
+    setState(() {
+      _categories.add(Category(
+        name: "Currency",
+        units: [],
+        color: _baseColors.last,
+        iconLocation: _imageLocations.last,
+      ));
+    });
+    final api = Api();
+    final currencyUnits = await api.getUnits();
+    // If the API errors out or we have no internet connection, this category
+    // remains in placeholder mode (disabled)
+    if (currencyUnits != null) {
+      setState(() {
+        _categories.removeLast();
+        _categories.add(Category(
+          name: "Currency",
+          units: currencyUnits,
+          color: _baseColors.last,
+          iconLocation: _imageLocations.last,
+        ));
+      });
+    }
+  }
+
+  // We use didChangeDependencies() so that we can wait for our JSON asset to be
+  // loaded in (async).
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (_categories.isEmpty) {
+      await _retrieveLocalCategories();
+      await _retrieveApiCategories();
     }
   }
 
