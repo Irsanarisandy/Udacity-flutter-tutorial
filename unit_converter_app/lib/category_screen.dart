@@ -96,22 +96,35 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  Widget _buildCategoryWidgets() {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
+  Widget _buildCategoryWidgets(Orientation deviceOrientation) {
+    if (deviceOrientation == Orientation.portrait) {
+      return ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return CategoryTile(
+            category: _categories[index],
+            onTap: _onCategoryTap
+          );
+        },
+        itemCount: _categories.length,
+      );
+    }
+    return GridView.count(
+      crossAxisCount: 2,  // No. of category per row
+      childAspectRatio: 3.0,  // Size of category object (hint: press and hold on the category)
+      children: _categories.map((Category category) {
         return CategoryTile(
-          category: _categories[index],
-          onTap: _onCategoryTap
+          category: category,
+          onTap: _onCategoryTap,
         );
-      },
-      itemCount: _categories.length,
+      }).toList(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    assert(debugCheckHasMediaQuery(context));
     final categoryView = Padding(
-      child: _buildCategoryWidgets(),
+      child: _buildCategoryWidgets(MediaQuery.of(context).orientation),
       padding: EdgeInsets.only(left: 8.0, right: 8.0, bottom: 48.0),
     );
 

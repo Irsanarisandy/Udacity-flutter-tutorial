@@ -13,6 +13,8 @@ class _UnitConverterState extends State<UnitConverter> {
   Unit _outputUnit;
   List<DropdownMenuItem> _unitMenuItems;
   bool _showError = false;
+  // Ensures that the input value persists
+  final _inputKey = GlobalKey(debugLabel: 'inputText');
 
   void _setDefaults() {
     setState(() {
@@ -162,6 +164,7 @@ class _UnitConverterState extends State<UnitConverter> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TextField(
+            key: _inputKey,
             keyboardType: TextInputType.number,
             onChanged: _updateInputValue,
             textAlign: TextAlign.right,
@@ -212,8 +215,7 @@ class _UnitConverterState extends State<UnitConverter> {
       )
     );
 
-    final converter = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final converter = ListView(
       children: [
         inputWidget,
         comparisonWidget,
@@ -223,7 +225,19 @@ class _UnitConverterState extends State<UnitConverter> {
 
     return Padding(
       padding: _padding,
-      child: converter,
+      child: OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return converter;
+          }
+          return Center(
+            child: Container(
+              width: 450.0,
+              child: converter,
+            ),
+          );
+        }
+      ),
     );
   }
 }
