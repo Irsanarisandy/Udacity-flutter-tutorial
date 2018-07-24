@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unit_converter_app/category_screen.dart';
+import 'category_screen.dart';
 
 /// The function that is called when main.dart is run.
 void main() {

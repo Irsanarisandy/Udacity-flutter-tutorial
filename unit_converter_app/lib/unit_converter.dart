@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 // @required is defined in the meta.dart package
 import 'package:meta/meta.dart';
-import 'package:unit_converter_app/unit.dart';
+import 'category.dart';
+import 'unit.dart';
 
 final _padding = EdgeInsets.all(16.0);
 
-class _ConverterScreenState extends State<ConverterScreen> {
+class _UnitConverterState extends State<UnitConverter> {
   double _inputValue;
   Unit _inputUnit;
   String _outputValue = '';
@@ -15,15 +16,15 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   void _setDefaults() {
     setState(() {
-      _inputUnit = widget.units[0];
-      _outputUnit = widget.units[1];
+      _inputUnit = widget.category.units[0];
+      _outputUnit = widget.category.units[1];
     });
   }
 
   void _createDropdownMenuItems() {
     var newItems = <DropdownMenuItem>[];
 
-    for (var unit in widget.units) {
+    for (var unit in widget.category.units) {
       newItems.add(DropdownMenuItem(
         value: unit.name,
         child: Container(
@@ -45,6 +46,15 @@ class _ConverterScreenState extends State<ConverterScreen> {
     super.initState();
     _setDefaults();
     _createDropdownMenuItems();
+  }
+
+  @override
+  void didUpdateWidget(UnitConverter old) {
+    super.didUpdateWidget(old);
+    if (old.category != widget.category) {
+      _setDefaults();
+      _createDropdownMenuItems();
+    }
   }
 
   String _format(double conversion) {
@@ -86,7 +96,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Unit _getUnitName(String unitName) {
-    return widget.units.firstWhere(
+    return widget.category.units.firstWhere(
       (Unit unit) {
         return unit.name == unitName;
       },
@@ -218,21 +228,15 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 }
 
-class ConverterScreen extends StatefulWidget {
-  const ConverterScreen({
+class UnitConverter extends StatefulWidget {
+  const UnitConverter({
     Key key,
-    @required this.name,
-    @required this.color,
-    @required this.units,
-  }) : assert(name != null),
-        assert(color != null),
-        assert(units != null),
+    @required this.category,
+  }) : assert(category != null),
         super(key: key);
 
-  final String name;
-  final ColorSwatch color;
-  final List<Unit> units;
+  final Category category;
 
   @override
-  _ConverterScreenState createState() => _ConverterScreenState();
+  _UnitConverterState createState() => _UnitConverterState();
 }
